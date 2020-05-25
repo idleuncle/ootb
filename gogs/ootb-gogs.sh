@@ -19,7 +19,7 @@ fi
 
 if [ ! -d ${GOGS_LOGDIR} ]; then
     echo mkdir ${GOGS_LOGDIR}
-    mkdir -p ${GOGS_DATADIR} 
+    mkdir -p ${GOGS_LOGDIR} 
 fi
 
 echo OOTB_GOGS_NAME: ${OOTB_GOGS_NAME}
