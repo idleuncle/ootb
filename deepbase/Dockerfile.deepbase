@@ -1,0 +1,141 @@
+# ==================================================================
+# module list
+# ------------------------------------------------------------------
+# python        3.7    (apt)
+# pytorch       latest (pip)
+# tensorflow    latest (pip)
+# keras         latest (pip)
+# ==================================================================
+# FROM nvidia/cuda:10.2-cudnn7-runtime-ubuntu18.04
+FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
+ENV LANG C.UTF-8
+RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
+    PIP_FIRST_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
+    PIP_INSTALL="pip install -i https://mirrors.aliyun.com/pypi/simple --no-cache-dir --upgrade" && \
+    GIT_CLONE="git clone --depth 10" && \
+    rm -rf /var/lib/apt/lists/* \
+           /etc/apt/sources.list.d/cuda.list \
+           /etc/apt/sources.list.d/nvidia-ml.list && \
+    sed -i -e 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+    apt-get update && \
+# ==================================================================
+# tools
+# ------------------------------------------------------------------
+    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        build-essential \
+        apt-utils \
+        ca-certificates \
+        wget \
+        git \
+        vim \
+        sqlite \
+        libssl-dev \
+        curl \
+        unzip \
+        unrar \
+        && \
+    $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
+    cd ~/cmake && \
+    ./bootstrap && \
+    make -j"$(nproc)" install && \
+# ==================================================================
+# python
+# ------------------------------------------------------------------
+    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        software-properties-common \
+        && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        python3.7 \
+        python3.7-dev \
+        python3-distutils-extra \
+        && \
+    wget -O ~/get-pip.py \
+        https://bootstrap.pypa.io/get-pip.py && \
+    python3.7 ~/get-pip.py && \
+    ln -s /usr/bin/python3.7 /usr/local/bin/python3 && \
+    ln -s /usr/bin/python3.7 /usr/local/bin/python && \
+    $PIP_FIRST_INSTALL \
+        setuptools \
+        && \
+    $PIP_INSTALL \
+        numpy \
+        scipy \
+        pandas \
+        cloudpickle \
+        scikit-image>=0.14.2 \
+        scikit-learn \
+        matplotlib \
+        Cython \
+        tqdm \
+        loguru \
+        && \
+# ==================================================================
+# pytorch
+# ------------------------------------------------------------------
+    $PIP_INSTALL \
+        future \
+        numpy \
+        protobuf \
+        enum34 \
+        pyyaml \
+        typing \
+        && \
+    $PIP_INSTALL \
+        --pre torch torchvision -f \
+        https://download.pytorch.org/whl/nightly/cu102/torch_nightly.html \
+        && \
+    $PIP_INSTALL \
+        transformers \
+        && \
+# ==================================================================
+# tensorflow
+# ------------------------------------------------------------------
+    $PIP_INSTALL \
+        tensorflow-gpu \
+        && \
+# ==================================================================
+# keras
+# ------------------------------------------------------------------
+    $PIP_INSTALL \
+        h5py \
+        keras \
+        keras_bert \
+        && \
+# ==================================================================
+# onnx
+# ------------------------------------------------------------------
+    $PIP_INSTALL \
+        onnxruntime \
+        && \
+# ==================================================================
+# jupyter
+# ------------------------------------------------------------------
+    $PIP_INSTALL \
+        ipython \
+        jupyter \
+        jupyterlab \
+        jupytext \
+        flask \
+        && \
+# ==================================================================
+# apex
+# ------------------------------------------------------------------
+    $GIT_CLONE https://github.com/nvidia/apex ~/apex && \
+    cd ~/apex && \
+    pip install -v --no-cache-dir ./ && \
+# ==================================================================
+# vim
+# ------------------------------------------------------------------
+    $GIT_CLONE https://github.com/amix/vimrc.git ~/.vim_runtime && \
+    cd ~/.vim_runtime && \
+    ./install_awesome_vimrc.sh && \
+# ==================================================================
+# config & cleanup
+# ------------------------------------------------------------------
+    ldconfig && \
+    apt-get clean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/* /tmp/* ~/*
+EXPOSE 6006
