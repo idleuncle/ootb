@@ -5,9 +5,14 @@
 # pytorch       latest (pip)
 # tensorflow    latest (pip)
 # keras         latest (pip)
+#
+#    $PIP_INSTALL \
+    #        --pre torch torchvision \
+    #    https://download.pytorch.org/whl/nightly/cu102/torch_nightly.html \
+    #    && \
 # ==================================================================
-# FROM nvidia/cuda:10.2-cudnn7-runtime-ubuntu18.04
-FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
+# FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
+FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
 ENV LANG C.UTF-8
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     PIP_FIRST_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
@@ -34,7 +39,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         unzip \
         unrar \
         && \
-    $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
+    $GIT_CLONE https://github.com.cnpmjs.org/Kitware/CMake ~/cmake && \
     cd ~/cmake && \
     ./bootstrap && \
     make -j"$(nproc)" install && \
@@ -70,6 +75,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         Cython \
         tqdm \
         loguru \
+        flashtext \
         && \
 # ==================================================================
 # pytorch
@@ -83,11 +89,10 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         typing \
         && \
     $PIP_INSTALL \
-        --pre torch torchvision -f \
-        https://download.pytorch.org/whl/nightly/cu102/torch_nightly.html \
-        && \
+        torch==1.7.1 \
+        torchvision==0.8.2 \
     $PIP_INSTALL \
-        transformers \
+        transformers==4.2.2 \
         && \
 # ==================================================================
 # tensorflow
@@ -122,13 +127,13 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # ==================================================================
 # apex
 # ------------------------------------------------------------------
-    $GIT_CLONE https://github.com/nvidia/apex ~/apex && \
+    $GIT_CLONE https://github.com.cnpmjs.org/nvidia/apex ~/apex && \
     cd ~/apex && \
     pip install -v --no-cache-dir ./ && \
 # ==================================================================
 # vim
 # ------------------------------------------------------------------
-    $GIT_CLONE https://github.com/amix/vimrc.git ~/.vim_runtime && \
+    $GIT_CLONE https://github.com.cnpmjs.org/amix/vimrc.git ~/.vim_runtime && \
     cd ~/.vim_runtime && \
     ./install_awesome_vimrc.sh && \
 # ==================================================================
@@ -138,4 +143,11 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     apt-get clean && \
     apt-get autoremove && \
     rm -rf /var/lib/apt/lists/* /tmp/* ~/*
+
+COPY create_user.sh /deepcode/create_user.sh
+COPY pip.conf /deepcode/pip.conf
+
+WORKDIR /deepcode
+
 EXPOSE 6006
+EXPOSE 8888

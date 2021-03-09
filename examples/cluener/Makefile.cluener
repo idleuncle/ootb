@@ -1,0 +1,121 @@
+DATASET_NAME=cluener
+all:
+	python run_${DATASET_NAME}.py \
+		--do_experiment \
+
+new:
+	python run_${DATASET_NAME}.py \
+		--do_new
+
+train:
+	python run_${DATASET_NAME}.py \
+		--do_train \
+
+eval:
+	python run_${DATASET_NAME}.py \
+		--do_eval \
+
+predict:
+	python run_${DATASET_NAME}.py \
+		--do_predict \
+
+eda:
+	python run_${DATASET_NAME}.py \
+		--do_eda \
+
+submit:
+	python run_${DATASET_NAME}.py \
+		--do_submit \
+
+build_deepcode:
+	python -m theta --build_deepcode --dataset_name ${DATASET_NAME}
+
+run_deepcode:
+	python -m theta --run_deepcode --dataset_name ${DATASET_NAME} \
+		--model_path "/opt/share/pretrained/pytorch/bert-base-chinese"
+		# --model_path "/opt/share/pretrained/pytorch/roberta-wwm-large-ext-chinese"
+
+
+push_deepcode:
+	python -m theta --push_deepcode --dataset_name ${DATASET_NAME}
+
+export_train_json_data: 
+	python -m theta --export_train_data \
+		--dataset_name ${DATASET_NAME} \
+		--format json \
+		--dataset_file ./data/${DATASET_NAME}_train_data.json 
+
+export_train_brat_data: 
+	python -m theta --export_train_data \
+		--dataset_name ${DATASET_NAME} \
+		--format brat \
+		--max_pages 100 \
+		--brat_data_dir brat_data/collections/${DATASET_NAME}_train
+
+export_test_json_data: 
+	python -m theta --export_test_data \
+		--dataset_name ${DATASET_NAME} \
+		--format json \
+		--dataset_file ./data/${DATASET_NAME}_test_data.json 
+
+export_test_brat_data: 
+	python -m theta --export_test_data \
+		--dataset_name ${DATASET_NAME} \
+		--format brat \
+		--max_pages 100 \
+		--brat_data_dir brat_data/collections/${DATASET_NAME}_test
+
+run_brat:
+	docker run -it --rm -p 8001:8001 \
+		-v ${PWD}/brat_data/collections:/brat/data/collections \
+		ootb/brat:latest
+
+brat_to_json:
+	python -m theta --brat_to_json \
+		--dataset_name ${DATASET_NAME} \
+		--dataset_file ${DATASET_NAME}.json \
+		--brat_data_dir brat_data/collections/brat_${DATASET_NAME}
+
+
+# evaluate: 0.834775
+REVIEWS0=808d6c2a
+# evaluate: 0.831799
+REVIEWS1=cac0c4cc
+# evaluate: 0.825695
+REVIEWS2=660d6912
+MIN_DUPS=2
+MERGE_FILE=./outputs/${DATASET_NAME}_merge_${REVIEWS0}_${REVIEWS1}_${REVIEWS2}_${MIN_DUPS}dup.json
+merge_ner_datasets:
+	python -m theta \
+		--merge_ner_datasets \
+		./outputs/saved_models/${REVIEWS0}/${DATASET_NAME}_reviews_${REVIEWS0}.json \
+		./outputs/saved_models/${REVIEWS1}/${DATASET_NAME}_reviews_${REVIEWS1}.json \
+		./outputs/saved_models/${REVIEWS2}/${DATASET_NAME}_reviews_${REVIEWS2}.json \
+		--min_dups ${MIN_DUPS} \
+		--dataset_file ${MERGE_FILE}
+
+MERGE_SUBMISSION_FILE=./submissions/${DATASET_NAME}_submission_merge_${REVIEWS0}_${REVIEWS1}_${REVIEWS2}_${MIN_DUPS}dup.json
+generate_merge_submission:
+	python run_${DATASET_NAME}.py \
+		--generate_submission \
+		--dataset_file ${MERGE_FILE} \
+		--submission_file  ${MERGE_SUBMISSION_FILE}
+
+
+# 只保留标注文本区间不重叠的实体
+MIX_FILE=./outputs/${DATASET_NAME}_mix_${REVIEWS0}_${REVIEWS1}_${REVIEWS2}.json
+mix_ner_datasets:
+	python -m theta \
+		--mix_ner_datasets \
+		./outputs/saved_models/${REVIEWS0}/${DATASET_NAME}_reviews_${REVIEWS0}.json \
+		./outputs/saved_models/${REVIEWS1}/${DATASET_NAME}_reviews_${REVIEWS1}.json \
+		./outputs/saved_models/${REVIEWS2}/${DATASET_NAME}_reviews_${REVIEWS2}.json \
+		--dataset_file ${MIX_FILE}
+
+MIX_SUBMISSION_FILE=./submissions/${DATASET_NAME}_submission_mix_${REVIEWS0}_${REVIEWS1}_${REVIEWS2}.json
+generate_mix_submission:
+	python run_${DATASET_NAME}.py \
+		--generate_submission \
+		--dataset_file ${MIX_FILE} \
+		--submission_file  ${MIX_SUBMISSION_FILE}
+

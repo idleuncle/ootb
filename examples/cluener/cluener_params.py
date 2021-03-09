@@ -1,0 +1,292 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# -------------------- Params --------------------
+from theta.modeling import (CommonParams, NerAppParams, NerParams, Params,
+                            log_global_params)
+
+# 7aa9c492@gpu.huawei
+# eval: 0.7913 online: 0.77832
+# f5b3bfae0@gpu.huawei
+# 10epochs, eval_data_generator alone.
+# eval: 0.775189
+#  experiment_params = NerAppParams(
+#      CommonParams(
+#          dataset_name="cluener",
+#          experiment_name="CLUE",
+#          train_file=None,
+#          eval_file=None,
+#          test_file=None,
+#          #  learning_rate=2e-5,
+#          learning_rate=1e-4,
+#          adam_epsilon=1e-6,
+#          weight_decay=0.0,
+#          train_max_seq_length=64,
+#          eval_max_seq_length=64,
+#          per_gpu_train_batch_size=32,
+#          per_gpu_eval_batch_size=32,
+#          per_gpu_predict_batch_size=32,
+#          seg_len=62,
+#          seg_backoff=0,
+#          num_train_epochs=10,
+#          fold=0,
+#          num_augments=2,
+#          enable_kd=False,
+#          #  enable_sda=True,
+#          #  sda_teachers=3,
+#          #  sda_stategy='recent_models',
+#          #  sda_empty_first=False,
+#          loss_type="CrossEntropyLoss",
+#          #  loss_type="FocalLoss",
+#          focalloss_gamma=2.0,
+#          model_type="bert",
+#          #  model_path="/opt/share/pretrained/pytorch/roberta-large-chinese",
+#          model_path="/opt/share/pretrained/pytorch/bert-base-chinese",
+#          fp16=True,
+#          best_index="f1",
+#          random_type=None,
+#          allow_overlap=False,
+#          #  max_train_examples=0,
+#          confidence=0.3,
+#          enable_nested_entities=False,
+#          seed=8864),
+#      NerParams(ner_type='pn', ),
+#  )
+
+# 0ab2ffcc@gpu.huawei
+# 5epochs, 0augs
+# eval: 0.784263
+# clue rank 81: 0.78615
+#  experiment_params = NerAppParams(
+#      CommonParams(
+#          dataset_name="cluener",
+#          experiment_name="CLUE",
+#          train_file=None,
+#          eval_file=None,
+#          test_file=None,
+#          #  learning_rate=2e-5,
+#          learning_rate=1e-4,
+#          adam_epsilon=1e-6,
+#          weight_decay=0.0,
+#          train_max_seq_length=64,
+#          eval_max_seq_length=64,
+#          per_gpu_train_batch_size=32,
+#          per_gpu_eval_batch_size=32,
+#          per_gpu_predict_batch_size=32,
+#          seg_len=62,
+#          seg_backoff=0,
+#          num_train_epochs=5,
+#          fold=0,
+#          num_augments=0,
+#          enable_kd=False,
+#          #  enable_sda=True,
+#          #  sda_teachers=3,
+#          #  sda_stategy='recent_models',
+#          #  sda_empty_first=False,
+#          loss_type="CrossEntropyLoss",
+#          #  loss_type="FocalLoss",
+#          focalloss_gamma=2.0,
+#          model_type="bert",
+#          #  model_path="/opt/share/pretrained/pytorch/roberta-large-chinese",
+#          model_path="/opt/share/pretrained/pytorch/bert-base-chinese",
+#          fp16=True,
+#          best_index="f1",
+#          random_type=None,
+#          allow_overlap=False,
+#          #  max_train_examples=0,
+#          confidence=0.3,
+#          enable_nested_entities=False,
+#          seed=8864),
+#      NerParams(ner_type='pn', ),
+#  )
+
+# @gpu1.huawei
+# eval: 0.780598
+experiment_params = NerAppParams(
+    CommonParams(
+        dataset_name="cluener",
+        experiment_name="CLUE",
+        train_file=None,
+        eval_file=None,
+        test_file=None,
+        #  learning_rate=2e-5,
+        learning_rate=1e-4,
+        adam_epsilon=1e-6,
+        weight_decay=0.0,
+        train_max_seq_length=64,
+        eval_max_seq_length=64,
+        per_gpu_train_batch_size=32,
+        per_gpu_eval_batch_size=32,
+        per_gpu_predict_batch_size=32,
+        seg_len=62,
+        seg_backoff=0,
+        num_train_epochs=5,
+        fold=3,
+        num_augments=0,
+        enable_kd=False,
+        #  enable_sda=True,
+        #  sda_teachers=3,
+        #  sda_stategy='recent_models',
+        #  sda_empty_first=False,
+        loss_type="CrossEntropyLoss",
+        #  loss_type="FocalLoss",
+        focalloss_gamma=2.0,
+        model_type="bert",
+        #  model_path="/opt/share/pretrained/pytorch/roberta-large-chinese",
+        model_path="/opt/share/pretrained/pytorch/bert-base-chinese",
+        fp16=True,
+        best_index="f1",
+        random_type=None,
+        allow_overlap=False,
+        #  max_train_examples=0,
+        confidence=0.3,
+        enable_nested_entities=False,
+        seed=8864),
+    NerParams(ner_type='pn', ),
+)
+
+# bff0fa88@gpu.huawei
+# span, 2e-5
+# eval: 0.7825
+# enable_kd = True
+# eval: 0.796937
+# 2dups
+# eval: 0.7944
+#  experiment_params = NerAppParams(
+#      CommonParams(
+#          dataset_name="cluener",
+#          experiment_name="CLUE",
+#          train_file=None,
+#          eval_file=None,
+#          test_file=None,
+#          learning_rate=2e-5,
+#          #  learning_rate=1e-4,
+#          #  adam_epsilon=1e-6,
+#          #  weight_decay=0.0,
+#          train_max_seq_length=64,
+#          eval_max_seq_length=64,
+#          per_gpu_train_batch_size=32,
+#          per_gpu_eval_batch_size=32,
+#          per_gpu_predict_batch_size=32,
+#          seg_len=62,
+#          seg_backoff=0,
+#          num_train_epochs=5,
+#          fold=0,
+#          num_augments=2,
+#          enable_kd=True,
+#          #  enable_sda=True,
+#          #  sda_teachers=3,
+#          #  sda_stategy='recent_models',
+#          #  sda_empty_first=False,
+#          loss_type="CrossEntropyLoss",
+#          #  loss_type="FocalLoss",
+#          focalloss_gamma=2.0,
+#          model_type="bert",
+#          #  model_path="/opt/share/pretrained/pytorch/roberta-large-chinese",
+#          model_path="/opt/share/pretrained/pytorch/bert-base-chinese",
+#          fp16=True,
+#          best_index="f1",
+#          random_type=None,
+#          allow_overlap=False,
+#          #  max_train_examples=0,
+#          confidence=0.3,
+#          enable_nested_entities=False,
+#          seed=8864),
+#      NerParams(ner_type='span', ),
+#  )
+
+# cb45edba@gpu.huawei
+# crf, 2e-5
+# eval: 0.7948
+#  experiment_params = NerAppParams(
+#      CommonParams(
+#          dataset_name="cluener",
+#          experiment_name="CLUE",
+#          train_file=None,
+#          eval_file=None,
+#          test_file=None,
+#          learning_rate=2e-5,
+#          #  learning_rate=1e-4,
+#          #  adam_epsilon=1e-6,
+#          #  weight_decay=0.0,
+#          train_max_seq_length=64,
+#          eval_max_seq_length=64,
+#          per_gpu_train_batch_size=32,
+#          per_gpu_eval_batch_size=32,
+#          per_gpu_predict_batch_size=32,
+#          seg_len=62,
+#          seg_backoff=0,
+#          num_train_epochs=5,
+#          fold=0,
+#          num_augments=0,
+#          enable_kd=False,
+#          #  enable_sda=True,
+#          #  sda_teachers=3,
+#          #  sda_stategy='recent_models',
+#          #  sda_empty_first=False,
+#          loss_type="CrossEntropyLoss",
+#          #  loss_type="FocalLoss",
+#          focalloss_gamma=2.0,
+#          model_type="bert",
+#          #  model_path="/opt/share/pretrained/pytorch/roberta-large-chinese",
+#          model_path="/opt/share/pretrained/pytorch/bert-base-chinese",
+#          fp16=True,
+#          best_index="f1",
+#          random_type=None,
+#          allow_overlap=False,
+#          #  max_train_examples=0,
+#          confidence=0.3,
+#          enable_nested_entities=False,
+#          seed=8864),
+#      NerParams(ner_type='crf', ),
+#  )
+
+# 73f770fa@gpu.huawei
+# crf, 2e-5, enable_kd = True
+# eval: 0.7948
+#  experiment_params = NerAppParams(
+#      CommonParams(
+#          dataset_name="cluener",
+#          experiment_name="CLUE",
+#          train_file=None,
+#          eval_file=None,
+#          test_file=None,
+#          learning_rate=2e-5,
+#          #  learning_rate=1e-4,
+#          #  adam_epsilon=1e-6,
+#          #  weight_decay=0.0,
+#          train_max_seq_length=64,
+#          eval_max_seq_length=64,
+#          per_gpu_train_batch_size=32,
+#          per_gpu_eval_batch_size=32,
+#          per_gpu_predict_batch_size=32,
+#          seg_len=62,
+#          seg_backoff=0,
+#          num_train_epochs=5,
+#          fold=0,
+#          num_augments=0,
+#          enable_kd=False,
+#          #  enable_sda=True,
+#          #  sda_teachers=3,
+#          #  sda_stategy='recent_models',
+#          #  sda_empty_first=False,
+#          loss_type="CrossEntropyLoss",
+#          #  loss_type="FocalLoss",
+#          focalloss_gamma=2.0,
+#          model_type="bert",
+#          #  model_path="/opt/share/pretrained/pytorch/roberta-large-chinese",
+#          model_path="/opt/share/pretrained/pytorch/bert-base-chinese",
+#          fp16=True,
+#          best_index="f1",
+#          random_type=None,
+#          allow_overlap=False,
+#          #  max_train_examples=0,
+#          confidence=0.3,
+#          enable_nested_entities=False,
+#          seed=8864),
+#      NerParams(ner_type='crf', ),
+#  )
+experiment_params.debug()
+
+if __name__ == '__main__':
+    pass

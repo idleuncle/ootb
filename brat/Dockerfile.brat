@@ -1,0 +1,23 @@
+FROM python:3.7-alpine
+
+WORKDIR /brat
+
+COPY requirements.txt ./
+RUN PIP_INSTALL="pip install -i https://mirrors.aliyun.com/pypi/simple/ --no-cache-dir" && \
+        $PIP_INSTALL --upgrade pip \
+        $PIP_INSTALL -r requirements.txt
+
+# RUN apk add apache2 openrc
+
+COPY brat /brat
+
+EXPOSE 8001
+
+# RUN adduser -D brat && chown -R brat:brat data/collections work && chmod o-rwx data/collections work
+# USER brat
+# RUN adduser -D www-data
+
+VOLUME data/collections
+
+CMD [ "python", "./standalone.py" ]
+

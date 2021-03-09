@@ -1,2 +1,3 @@
 FROM busybox
-ADD /opt/share/pretrained/pytorch/bert-base-chinese /opt/share/pretrained/pytorch/bert-base-chinese
+ADD bert-base-chinese /opt/share/pretrained/pytorch/bert-base-chinese
+VOLUME /opt/share/pretrained/pytorch/bert-base-chinese

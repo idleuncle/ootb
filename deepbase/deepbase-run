@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export IMAGE_NAME=deepbase
+docker run --gpus all -it --rm --name ${IMAGE_NAME} \
+    -e DEEPCODE_UID=${DEEPCODE_UID} \
+    -e DEEPCODE_GROUPS=${DEEPCODE_GROUPS} \
+    -v ${PWD}:/deepcode \
+    ${IMAGE_NAME} /bin/bash
+
