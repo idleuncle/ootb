@@ -1,0 +1,10 @@
+FROM ootb/deepbase:10.2-cudnn7-devel-ubuntu18.04
+
+COPY pip.conf /root/.pip/pip.conf
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+WORKDIR /work
+
+ENTRYPOINT ['/usr/local/bin/jupyter', 'lab', '--no-browser', '--allow_root', '--ip', '0.0.0.0', '--port', '8080']
+
