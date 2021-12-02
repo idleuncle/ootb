@@ -1,0 +1,63 @@
+FROM nvcr.io/nvidia/tensorrt:21.08-py3
+
+RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
+    PIP_FIRST_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
+    PIP_INSTALL="pip install -i https://mirrors.aliyun.com/pypi/simple --no-cache-dir --upgrade" && \
+    GIT_CLONE="git clone --depth 10" && \
+    rm -rf /var/lib/apt/lists/* \
+           /etc/apt/sources.list.d/cuda.list \
+           /etc/apt/sources.list.d/nvidia-ml.list && \
+    sed -i -e 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get dist-upgrade -y && \
+# ==================================================================
+# tools
+# ------------------------------------------------------------------
+    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        cdargs \
+        tmux \
+        && \
+# ==================================================================
+# python
+# ------------------------------------------------------------------
+    # DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+    #     software-properties-common \
+    #     && \
+    # add-apt-repository ppa:deadsnakes/ppa && \
+    # apt-get update && \
+    # DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+    #     python3.9 \
+    #     python3.9-dev \
+    #     python3-distutils-extra \
+    #     && \
+    # wget -O ~/get-pip.py \
+    #     https://bootstrap.pypa.io/get-pip.py && \
+    # python3.9 ~/get-pip.py && \
+    # ln -sf /usr/bin/python3.9 /usr/local/bin/python3 && \
+    # ln -sf /usr/bin/python3.9 /usr/local/bin/python && \
+    # $PIP_FIRST_INSTALL \
+    #     setuptools \
+    #     && \
+    #
+# ==================================================================
+# requirements.txt
+# ------------------------------------------------------------------
+    echo "Done."    
+
+RUN git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
+    sh ~/.vim_runtime/install_basic_vimrc.sh
+
+
+RUN PIP_FIRST_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
+    PIP_INSTALL="pip install -i https://mirrors.aliyun.com/pypi/simple --no-cache-dir --upgrade" && \
+    $PIP_INSTALL \
+        pip \
+        pipenv
+
+
+WORKDIR /work
+
+# COPY eval_requirements.txt .
+# RUN PIP_INSTALL="pip install -i https://mirrors.aliyun.com/pypi/simple --no-cache-dir --upgrade" && \
+#         $PIP_INSTALL -r eval_requirements.txt
+

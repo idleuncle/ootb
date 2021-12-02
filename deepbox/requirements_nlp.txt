@@ -1,0 +1,11 @@
+# ----- NLP -----
+spacy
+nltk
+scikit-learn
+flashtext
+transformers==4.12.2
+tokenizers==0.10.3
+datasets==1.16.1
+opencc-python-reimplemented
+jieba
+

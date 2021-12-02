@@ -1,0 +1,47 @@
+FROM ootb/embedded:base
+
+# RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
+#     PIP_FIRST_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
+#     PIP_INSTALL="pip install -i https://mirrors.aliyun.com/pypi/simple --no-cache-dir --upgrade" && \
+#     GIT_CLONE="git clone --depth 10" && \
+# ==================================================================
+# tools
+# ------------------------------------------------------------------
+    # DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+    #     cdargs \
+    #     tmux \
+    #     && \
+# ==================================================================
+# python
+# ------------------------------------------------------------------
+    # DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+    #     software-properties-common \
+    #     && \
+    # add-apt-repository ppa:deadsnakes/ppa && \
+    # apt-get update && \
+    # DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+    #     python3.9 \
+    #     python3.9-dev \
+    #     python3-distutils-extra \
+    #     && \
+    # wget -O ~/get-pip.py \
+    #     https://bootstrap.pypa.io/get-pip.py && \
+    # python3.9 ~/get-pip.py && \
+    # ln -sf /usr/bin/python3.9 /usr/local/bin/python3 && \
+    # ln -sf /usr/bin/python3.9 /usr/local/bin/python && \
+    # $PIP_FIRST_INSTALL \
+    #     setuptools \
+    #     && \
+    #
+# ==================================================================
+# requirements.txt
+# ------------------------------------------------------------------
+    # echo "Done."
+
+COPY dev_requirements.txt .
+RUN PIP_INSTALL="pip install -i https://mirrors.aliyun.com/pypi/simple --no-cache-dir --upgrade" && \
+    $PIP_INSTALL -r dev_requirements.txt
+
+
+WORKDIR /work
+

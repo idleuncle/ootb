@@ -1,0 +1,7 @@
+# FROM registry.cn-shanghai.aliyuncs.com/ootb/deepbase:10.1-cudnn7-devel-ubuntu18.04
+FROM ootb/deepbase:10.1-cudnn7-devel-ubuntu18.04
+
+COPY pip.conf /root/.pip/pip.conf
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
